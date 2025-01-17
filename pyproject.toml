@@ -15,6 +15,9 @@ python = ">=3.9"
 singer-sdk = "~=0.43.1"
 fs-s3fs = { version = "^1.1.1", optional = true }
 requests = "~=2.32.2"
+boto3 = "1.35.85"
+inflection = "^0.5.1"
+record-cleanser = {path = "../../helpers/record-cleanser/dist/record_cleanser-0.0.4-py3-none-any.whl"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8"

@@ -5,24 +5,28 @@ from __future__ import annotations
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
-from tap_jira import streams
+from tap_jira.client import JiraStream
+from tap_jira.streams import (
+    BoardStream,
+    FieldsStream,
+    IssueChangeLogStream,
+    IssueStream,
+    IssueTypeStream,
+    ProjectStream,
+    SprintStream,
+    UsersStream,
+)
 
 
 class TapJira(Tap):
     """tap-jira tap class."""
 
     name = "tap-jira"
-
     config_jsonschema = th.PropertiesList(
         th.Property(
             "start_date",
             th.DateTimeType,
             description="Earliest record date to sync",
-        ),
-        th.Property(
-            "end_date",
-            th.DateTimeType,
-            description="Latest record date to sync",
         ),
         th.Property(
             "domain",
@@ -45,17 +49,6 @@ class TapJira(Tap):
             required=True,
         ),
         th.Property(
-            "page_size",
-            th.ObjectType(
-                th.Property(
-                    "issues",
-                    th.IntegerType,
-                    description="Page size for issues stream",
-                    default=100,
-                ),
-            ),
-        ),
-        th.Property(
             "stream_options",
             th.ObjectType(
                 th.Property(
@@ -74,53 +67,21 @@ class TapJira(Tap):
             ),
             description="Options for individual streams",
         ),
-        th.Property(
-            "include_audit_logs",
-            th.BooleanType,
-            description="Include the audit logs stream",
-            default=False,
-        ),
     ).to_dict()
 
-    def discover_streams(self) -> list[streams.JiraStream]:
+    def discover_streams(self) -> list[JiraStream]:
         """Return a list of discovered streams.
 
         Returns:
             A list of discovered streams.
         """
-        stream_list = [
-            streams.UsersStream(self),
-            streams.FieldStream(self),
-            streams.ServerInfoStream(self),
-            streams.IssueTypeStream(self),
-            streams.ProjectStream(self),
-            streams.WorkflowStatusStream(self),
-            streams.IssueStream(self),
-            streams.PermissionStream(self),
-            streams.ProjectRoleStream(self),
-            streams.PriorityStream(self),
-            streams.PermissionHolderStream(self),
-            streams.SprintStream(self),
-            streams.ProjectRoleActorStream(self),
-            streams.DashboardStream(self),
-            streams.FilterSearchStream(self),
-            streams.FilterDefaultShareScopeStream(self),
-            streams.GroupsPickerStream(self),
-            streams.LicenseStream(self),
-            streams.ScreensStream(self),
-            streams.ScreenSchemesStream(self),
-            streams.StatusesSearchStream(self),
-            streams.WorkflowStream(self),
-            streams.WorkflowSearchStream(self),
-            streams.Resolutions(self),
-            streams.IssueChangeLogStream(self),
-            streams.IssueComments(self),
-            streams.BoardStream(self),
-            streams.IssueWatchersStream(self),
-            streams.IssueWorklogs(self),
+        return [
+            UsersStream(self),
+            FieldsStream(self),
+            IssueTypeStream(self),
+            ProjectStream(self),
+            IssueStream(self),
+            SprintStream(self),
+            BoardStream(self),
+            IssueChangeLogStream(self),
         ]
-
-        if self.config.get("include_audit_logs", False):
-            stream_list.append(streams.AuditingStream(self))
-
-        return stream_list

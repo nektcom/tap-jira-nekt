@@ -3,17 +3,18 @@
 from __future__ import annotations
 
 import typing as t
-from pathlib import Path
 
+import inflection
 import requests
 import requests.auth
+from record_cleanser.core import RecordCleanser
+from singer_sdk.helpers.types import Context
 from singer_sdk.streams import RESTStream
 
 if t.TYPE_CHECKING:
     from singer_sdk.helpers.types import Context
 
 _Auth = t.Callable[[requests.PreparedRequest], requests.PreparedRequest]
-SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class JiraStream(RESTStream):
@@ -21,7 +22,8 @@ class JiraStream(RESTStream):
 
     next_page_token_jsonpath = "$.paging.start"  # noqa: S105
     records_jsonpath = "$[*]"  # Or override `parse_response`.
-    instance_name: str
+    instance_name: str = ""
+    record_cleanser = RecordCleanser()
 
     @property
     def url_base(self) -> str:
@@ -40,20 +42,6 @@ class JiraStream(RESTStream):
             password=self.config["api_token"],
             username=self.config["email"],
         )
-
-    @property
-    def http_headers(self) -> dict:
-        """Return the http headers needed.
-
-        Returns:
-            A dictionary of HTTP headers.
-        """
-        headers = {}
-        if "user_agent" in self.config:
-            headers["User-Agent"] = self.config.get("user_agent")
-        # If not using an authenticator, you may also provide inline auth headers:
-        # headers["Private-Token"] = self.config.get("auth_token")  # noqa: ERA001
-        return headers
 
     def get_url_params(
         self,
@@ -97,10 +85,7 @@ class JiraStream(RESTStream):
         _value = None
         is_last = None
 
-        if (
-            isinstance(resp_json, dict)
-            and resp_json.get(self.instance_name) is not None
-        ):
+        if isinstance(resp_json, dict) and resp_json.get(self.instance_name) is not None:
             _value = resp_json.get(self.instance_name)
             total = resp_json.get("total", -1)
             is_last = resp_json.get("isLast")
@@ -116,3 +101,15 @@ class JiraStream(RESTStream):
         elif len(_value) == 0 or total <= previous_token + results:
             return None
         return previous_token + results
+
+    def convert_keys_to_snake_case(self, obj):
+        if isinstance(obj, dict):
+            return {inflection.underscore(k): self.convert_keys_to_snake_case(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [self.convert_keys_to_snake_case(item) for item in obj]
+        else:
+            return obj
+
+    def post_process(self, row: dict[str, t.Any], context: t.Mapping[str, t.Any] | None = None) -> dict | None:
+        new_row = self.convert_keys_to_snake_case(row)
+        return super().post_process(self.record_cleanser.cleanse_record(new_row, self.schema), context)
