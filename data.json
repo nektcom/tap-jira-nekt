@@ -1,0 +1,7 @@
+{
+  "name": "tap-jira-nekt",
+  "pip_url": "-e ./extract/tap-jira-nekt",
+  "executable": "tap-jira-nekt",
+  "namespace": "tap_jira-nekt",
+  "capabilities": ["state", "catalog", "discover"]
+}

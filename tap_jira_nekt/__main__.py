@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from tap_jira.tap import TapJira
+from tap_jira_nekt.tap import TapJira
 
 TapJira.cli()

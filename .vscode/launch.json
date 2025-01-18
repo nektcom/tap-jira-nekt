@@ -5,11 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "tap-jira",
+      "name": "tap-jira-nekt",
       "type": "debugpy",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "program": "tap_jira",
+      "program": "tap_jira_nekt",
       "justMyCode": false,
       "args": [
         "--config",

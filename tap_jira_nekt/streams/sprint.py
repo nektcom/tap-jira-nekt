@@ -6,8 +6,8 @@ import typing as t
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
-from tap_jira.client import JiraStream
-from tap_jira.streams import BoardStream
+from tap_jira_nekt.client import JiraStream
+from tap_jira_nekt.streams import BoardStream
 
 
 class SprintStream(JiraStream):

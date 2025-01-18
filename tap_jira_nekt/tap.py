@@ -5,8 +5,8 @@ from __future__ import annotations
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
-from tap_jira.client import JiraStream
-from tap_jira.streams import (
+from tap_jira_nekt.client import JiraStream
+from tap_jira_nekt.streams import (
     BoardStream,
     FieldsStream,
     IssueChangeLogStream,
@@ -21,7 +21,7 @@ from tap_jira.streams import (
 class TapJira(Tap):
     """tap-jira tap class."""
 
-    name = "tap-jira"
+    name = "tap-jira-nekt"
     config_jsonschema = th.PropertiesList(
         th.Property(
             "start_date",

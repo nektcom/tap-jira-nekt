@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "tap-jira"
+name = "tap-jira-nekt"
 version = "0.0.1"
 description = "`tap-jira` is a Singer tap for tap-jira, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Ethan Stein"]
 keywords = [
     "ELT",
-    "tap-jira",
+    "tap-jira-nekt",
 ]
 license = "Apache-2.0"
 
@@ -51,4 +51,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 # CLI declaration
-tap-jira = 'tap_jira.tap:TapJira.cli'
+tap-jira = 'tap_jira_nekt.tap:TapJira.cli'
