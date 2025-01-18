@@ -18,6 +18,7 @@ requests = "~=2.32.2"
 boto3 = "1.35.85"
 inflection = "^0.5.1"
 record-cleanser = {path = "../../helpers/record-cleanser/dist/record_cleanser-0.0.4-py3-none-any.whl"}
+custom-logger = {git = "https://github.com/olbycom/nekt-custom-logger-module.git", rev = "v0.0.7"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8"

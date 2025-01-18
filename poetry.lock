@@ -289,6 +289,27 @@ files = [
 markers = {main = "platform_system == \"Windows\"", dev = "platform_system == \"Windows\" or sys_platform == \"win32\""}
 
 [[package]]
+name = "custom-logger"
+version = "0.0.7"
+description = ""
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = []
+develop = false
+
+[package.dependencies]
+pyyaml = "^6.0.2"
+setuptools = "^70.3.0"
+wheel = "^0.43.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/olbycom/nekt-custom-logger-module.git"
+reference = "v0.0.7"
+resolved_reference = "2bd4bbe2733eca988b57eb86adfbabdd976853a7"
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.2"
 description = "Backport of PEP 654 (exception groups)"
@@ -1367,6 +1388,21 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
+name = "wheel"
+version = "0.43.0"
+description = "A built-package format for Python"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "wheel-0.43.0-py3-none-any.whl", hash = "sha256:55c570405f142630c6b9f72fe09d9b67cf1477fcf543ae5b8dcb1f5b7377da81"},
+    {file = "wheel-0.43.0.tar.gz", hash = "sha256:465ef92c69fa5c5da2d1cf8ac40559a8c940886afcef87dcf14b9470862f1d85"},
+]
+
+[package.extras]
+test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
+
+[[package]]
 name = "zipp"
 version = "3.21.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
@@ -1393,4 +1429,4 @@ s3 = ["fs-s3fs"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9"
-content-hash = "dbfa6ae53a3a79e739066114550dc287c0047c345ed7822133e4f68f6ba835bf"
+content-hash = "8cdc13402dfacb3bff78053492064f9298642d5b55109fdbd75bf4bbb037e896"
