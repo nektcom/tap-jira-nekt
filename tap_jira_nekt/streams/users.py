@@ -34,7 +34,7 @@ class UsersStream(JiraStream):
                 th.Property("32x32", th.StringType),
             ),
         ),
-        th.Property("display_Name", th.StringType),
+        th.Property("display_name", th.StringType),
         th.Property("active", th.BooleanType),
         th.Property("time_zone", th.StringType),
         th.Property("locale", th.StringType),
