@@ -41,7 +41,7 @@ select = ["ALL"]
 allow-star-arg-any = true
 
 [tool.ruff.lint.isort]
-known-first-party = ["tap_jira"]
+known-first-party = ["tap_jira_nekt"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -52,4 +52,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 # CLI declaration
-tap-jira = 'tap_jira_nekt.tap:TapJira.cli'
+tap-jira-nekt = 'tap_jira_nekt.tap:TapJira.cli'
