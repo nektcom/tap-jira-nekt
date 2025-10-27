@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import custom_logger
-from singer_sdk import Tap
-from singer_sdk import typing as th  # JSON schema typing helpers
+from nekt_singer_sdk import Tap
+from nekt_singer_sdk import typing as th  # JSON schema typing helpers
 
 from tap_jira_nekt.client import JiraStream
 from tap_jira_nekt.streams import (
@@ -17,8 +16,6 @@ from tap_jira_nekt.streams import (
     SprintStream,
     UsersStream,
 )
-
-_ = custom_logger
 
 
 class TapJira(Tap):

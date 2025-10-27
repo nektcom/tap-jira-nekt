@@ -10,6 +10,10 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "program": "tap_jira_nekt",
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "env": {
+        "PYTHONPATH": "${workspaceRoot}"
+      },
       "justMyCode": false,
       "args": [
         "--config",

@@ -7,12 +7,12 @@ import typing as t
 import inflection
 import requests
 import requests.auth
-from record_cleanser.core import RecordCleanser
-from singer_sdk.helpers.types import Context
-from singer_sdk.streams import RESTStream
+from nekt_singer_sdk.helpers.types import Context
+from nekt_singer_sdk.record_cleanser import RecordCleanser
+from nekt_singer_sdk.streams import RESTStream
 
 if t.TYPE_CHECKING:
-    from singer_sdk.helpers.types import Context
+    from nekt_singer_sdk.helpers.types import Context
 
 _Auth = t.Callable[[requests.PreparedRequest], requests.PreparedRequest]
 

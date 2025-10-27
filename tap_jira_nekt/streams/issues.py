@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from singer_sdk import typing as th  # JSON Schema typing helpers
+from nekt_singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_jira_nekt.client import JiraStream
 
 
 class IssueStream(JiraStream):
     name = "issues"
-    path = "/search"
+    path = "/search/jql"
     primary_keys = ["id"]
     replication_key = "updated"
     records_jsonpath = "$[issues][*]"
@@ -26,7 +26,19 @@ class IssueStream(JiraStream):
         th.Property(
             "fields",
             th.ObjectType(
-                th.Property("custom_fields", th.ArrayType(th.StringType)),
+                th.Property("description", th.StringType),
+                th.Property("created", th.DateTimeType),
+                th.Property("updated", th.DateTimeType),
+                th.Property(
+                    "status_category",
+                    th.ObjectType(
+                        th.Property("color_name", th.StringType),
+                        th.Property("id", th.IntegerType),
+                        th.Property("key", th.StringType),
+                        th.Property("name", th.StringType),
+                        th.Property("self", th.StringType),
+                    ),
+                ),
                 th.Property("statuscategorychangedate", th.StringType),
                 th.Property(
                     "issuetype",
@@ -52,6 +64,8 @@ class IssueStream(JiraStream):
                             "fields",
                             th.ObjectType(
                                 th.Property("summary", th.StringType),
+                                th.Property("created", th.DateTimeType),
+                                th.Property("updated", th.DateTimeType),
                                 th.Property(
                                     "status",
                                     th.ObjectType(
@@ -330,7 +344,7 @@ class IssueStream(JiraStream):
                         th.Property("self", th.StringType),
                         th.Property("account_id", th.StringType),
                         th.Property(
-                            "avatarUrls",
+                            "avatar_urls",
                             th.ObjectType(
                                 th.Property("48x48", th.StringType),
                                 th.Property("24x24", th.StringType),
@@ -338,11 +352,11 @@ class IssueStream(JiraStream):
                                 th.Property("32x32", th.StringType),
                             ),
                         ),
-                        th.Property("displayName", th.StringType),
+                        th.Property("display_name", th.StringType),
                         th.Property("active", th.BooleanType),
-                        th.Property("timeZone", th.StringType),
-                        th.Property("accountType", th.StringType),
-                        th.Property("emailAddress", th.StringType),
+                        th.Property("time_zone", th.StringType),
+                        th.Property("account_type", th.StringType),
+                        th.Property("email_address", th.StringType),
                     ),
                 ),
                 th.Property(
@@ -354,7 +368,7 @@ class IssueStream(JiraStream):
                         th.Property("name", th.StringType),
                         th.Property("id", th.StringType),
                         th.Property(
-                            "statusCategory",
+                            "status_category",
                             th.ObjectType(
                                 th.Property("self", th.StringType),
                                 th.Property("id", th.IntegerType),
@@ -386,9 +400,9 @@ class IssueStream(JiraStream):
                     th.ObjectType(
                         th.Property("self", th.StringType),
                         th.Property("account_id", th.StringType),
-                        th.Property("emailAddress", th.StringType),
+                        th.Property("email_address", th.StringType),
                         th.Property(
-                            "avatarUrls",
+                            "avatar_urls",
                             th.ObjectType(
                                 th.Property("48x48", th.StringType),
                                 th.Property("24x24", th.StringType),
@@ -396,10 +410,10 @@ class IssueStream(JiraStream):
                                 th.Property("32x32", th.StringType),
                             ),
                         ),
-                        th.Property("displayName", th.StringType),
+                        th.Property("display_name", th.StringType),
                         th.Property("active", th.BooleanType),
-                        th.Property("timeZone", th.StringType),
-                        th.Property("accountType", th.StringType),
+                        th.Property("time_zone", th.StringType),
+                        th.Property("account_type", th.StringType),
                     ),
                 ),
                 th.Property(
@@ -529,7 +543,7 @@ class IssueStream(JiraStream):
                     th.ObjectType(
                         th.Property("self", th.StringType),
                         th.Property("votes", th.IntegerType),
-                        th.Property("hasVoted", th.BooleanType),
+                        th.Property("has_voted", th.BooleanType),
                     ),
                 ),
                 th.Property("worklog", th.StringType),
@@ -551,6 +565,7 @@ class IssueStream(JiraStream):
         """Return a dictionary of query parameters."""
         params: dict = {}
         params["maxResults"] = 100
+        params["fields"] = "*all"
 
         jql: list[str] = []
 

@@ -6,7 +6,7 @@
 # import operator
 # import typing as t
 
-# from singer_sdk import typing as th  # JSON Schema typing helpers
+# from nekt_singer_sdk import typing as th  # JSON Schema typing helpers
 
 # from tap_jira.client import JiraStream
 

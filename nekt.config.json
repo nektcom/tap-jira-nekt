@@ -1,0 +1,51 @@
+{
+  "meltano": {
+    "name": "tap-jira-nekt",
+    "pip_url": "-e ./extract/tap-jira-nekt",
+    "executable": "tap-jira-nekt",
+    "namespace": "tap_jira-nekt",
+    "capabilities": ["state", "catalog", "discover"]
+  },
+  "connectors": [
+    {
+      "connector_slug": "jira",
+      "config_template": {
+        "type": "object",
+        "required": ["api_token", "start_date", "domain", "email"],
+        "properties": {
+          "api_token": {
+            "type": "string",
+            "order": 1,
+            "title": "API token",
+            "el_type": "extractor",
+            "docs_url": "https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/",
+            "description": "The token to authenticate against the API service."
+          },
+          "email": {
+            "type": "string",
+            "order": 2,
+            "title": "User email",
+            "el_type": "extractor",
+            "description": "The email of the user who generated the API token."
+          },
+          "domain": {
+            "type": "string",
+            "order": 3,
+            "title": "Workspace domain",
+            "el_type": "extractor",
+            "description": "Your Jira workspace domain. It should be like the URL you use to access your workspace, without the https:// part.",
+            "placeholder": "your-company.atlassian.net"
+          },
+          "start_date": {
+            "type": "string",
+            "order": 4,
+            "title": "Start date",
+            "format": "date-time",
+            "el_type": "extractor",
+            "description": "Records created or updated after the start date will be extracted from the source."
+          }
+        }
+      }
+    }
+  ]
+}

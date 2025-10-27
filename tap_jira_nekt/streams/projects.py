@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from singer_sdk import typing as th  # JSON Schema typing helpers
+from nekt_singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_jira_nekt.client import JiraStream
 
