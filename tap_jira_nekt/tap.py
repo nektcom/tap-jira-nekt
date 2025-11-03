@@ -76,12 +76,12 @@ class TapJira(Tap):
             A list of discovered streams.
         """
         return [
-            # UsersStream(self),
-            # FieldsStream(self),
-            # IssueTypeStream(self),
-            # ProjectStream(self),
+            UsersStream(self),
+            FieldsStream(self),
+            IssueTypeStream(self),
+            ProjectStream(self),
             IssueStream(self),
-            # SprintStream(self),
-            # BoardStream(self),
+            SprintStream(self),
+            BoardStream(self),
             IssueChangeLogStream(self),
         ]
