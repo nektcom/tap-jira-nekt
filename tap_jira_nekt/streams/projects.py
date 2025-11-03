@@ -12,7 +12,6 @@ class ProjectStream(JiraStream):
     path = "/project/search"
     primary_keys = ["id"]
     records_jsonpath = "$.values[*]"
-    instance_name = "values"
 
     schema = th.PropertiesList(
         th.Property("expand", th.StringType),

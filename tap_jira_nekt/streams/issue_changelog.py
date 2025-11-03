@@ -17,8 +17,6 @@ class IssueChangeLogStream(JiraStream):
     primary_keys = ["id"]
     records_jsonpath = "$[values][*]"
     state_partitioning_keys = []
-    instance_name = "values"
-    next_page_token_jsonpath = None
 
     schema = th.PropertiesList(
         th.Property("id", th.StringType),

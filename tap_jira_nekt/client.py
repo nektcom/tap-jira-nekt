@@ -11,6 +11,8 @@ from nekt_singer_sdk.helpers.types import Context
 from nekt_singer_sdk.record_cleanser import RecordCleanser
 from nekt_singer_sdk.streams import RESTStream
 
+from tap_jira_nekt.paginator import PAGE_SIZE, JiraOffsetPaginator
+
 if t.TYPE_CHECKING:
     from nekt_singer_sdk.helpers.types import Context
 
@@ -20,9 +22,7 @@ _Auth = t.Callable[[requests.PreparedRequest], requests.PreparedRequest]
 class JiraStream(RESTStream):
     """tap-jira stream class."""
 
-    next_page_token_jsonpath = "$.paging.start"  # noqa: S105
-    records_jsonpath = "$[*]"  # Or override `parse_response`.
-    instance_name: str = ""
+    records_jsonpath = "$[*]"
     record_cleanser = RecordCleanser()
 
     @property
@@ -43,6 +43,9 @@ class JiraStream(RESTStream):
             username=self.config["email"],
         )
 
+    def get_new_paginator(self) -> JiraOffsetPaginator:
+        return JiraOffsetPaginator(start_value=0, page_size=PAGE_SIZE)
+
     def get_url_params(
         self,
         context: Context | None,  # noqa: ARG002
@@ -58,49 +61,13 @@ class JiraStream(RESTStream):
             A dictionary of URL query parameters.
         """
         params: dict = {}
+        params["maxResults"] = PAGE_SIZE
         if next_page_token:
             params["startAt"] = next_page_token
         if self.replication_key:
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
-
         return params
-
-    def get_next_page_token(
-        self,
-        response: requests.Response,
-        previous_token: t.Any | None,  # noqa: ANN401
-    ) -> t.Any | None:  # noqa: ANN401
-        """Return a token for identifying next page or None if no more pages."""
-        # If pagination is required, return a token which can be used to get the
-        #       next page. If this is the final page, return "None" to end the
-        #       pagination loop.
-        resp_json = response.json()
-
-        if previous_token is None:
-            previous_token = 0
-
-        total = -1
-        results = 0
-        _value = None
-        is_last = None
-
-        if isinstance(resp_json, dict) and resp_json.get(self.instance_name) is not None:
-            _value = resp_json.get(self.instance_name)
-            total = resp_json.get("total", -1)
-            is_last = resp_json.get("isLast")
-            results = len(_value)  # type: ignore[arg-type]
-
-        if isinstance(is_last, bool) and total == -1 and not is_last:
-            return previous_token + results
-
-        if _value is None:
-            page = resp_json
-            if len(page) == 0 or total <= previous_token + results:
-                return None
-        elif len(_value) == 0 or total <= previous_token + results:
-            return None
-        return previous_token + results
 
     def convert_keys_to_snake_case(self, obj):
         if isinstance(obj, dict):
@@ -109,6 +76,9 @@ class JiraStream(RESTStream):
             return [self.convert_keys_to_snake_case(item) for item in obj]
         else:
             return obj
+
+    def validate_response(self, response: requests.Response) -> None:
+        return super().validate_response(response)
 
     def post_process(self, row: dict[str, t.Any], context: t.Mapping[str, t.Any] | None = None) -> dict | None:
         new_row = self.convert_keys_to_snake_case(row)

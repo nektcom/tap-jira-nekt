@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from nekt_singer_sdk import typing as th  # JSON Schema typing helpers
+import requests  # JSON Schema typing helpers
+from nekt_singer_sdk import typing as th
+from nekt_singer_sdk.pagination import JSONPathPaginator
 
 from tap_jira_nekt.client import JiraStream
 
@@ -15,7 +17,6 @@ class IssueStream(JiraStream):
     primary_keys = ["id"]
     replication_key = "updated"
     records_jsonpath = "$[issues][*]"
-    instance_name = "issues"
 
     # TODO: Add custom fields and description
     schema = th.PropertiesList(
@@ -557,6 +558,9 @@ class IssueStream(JiraStream):
         th.Property("updated", th.DateTimeType),
     ).to_dict()
 
+    def get_new_paginator(self) -> JSONPathPaginator:
+        return JSONPathPaginator(jsonpath="$.nextPageToken")
+
     def get_url_params(
         self,
         context: dict | None,  # noqa: ARG002
@@ -570,7 +574,7 @@ class IssueStream(JiraStream):
         jql: list[str] = []
 
         if next_page_token:
-            params["startAt"] = next_page_token
+            params["nextPageToken"] = next_page_token
 
         if self.replication_key:
             params["sort"] = "asc"
@@ -585,6 +589,9 @@ class IssueStream(JiraStream):
             params["jql"] = " and ".join(jql)
 
         return params
+
+    def validate_response(self, response: requests.Response) -> None:
+        return super().validate_response(response)
 
     def post_process(self, row: dict[str, Any], context: Mapping[str, Any] | None = None) -> dict | None:
         new_row = row

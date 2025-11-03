@@ -13,7 +13,7 @@ from tap_jira_nekt.streams import BoardStream
 class SprintStream(JiraStream):
     name = "sprints"
     parent_stream_type = BoardStream
-    path = "/board/{board_id}/sprint?maxResults=100"
+    path = "/board/{board_id}/sprint"
     replication_key = "id"
     records_jsonpath = "$[values][*]"
     instance_name = "values"
@@ -43,11 +43,3 @@ class SprintStream(JiraStream):
         if context:
             row["board_id"] = context["board_id"]
         return super().post_process(row, context)
-
-    def get_records(self, context: dict | None) -> t.Iterable[dict[str, t.Any]]:
-        """Get records from the API response."""
-        for record in self.request_records(context):
-            transformed_record = self.post_process(record, context)
-            if transformed_record is None:
-                continue
-            yield transformed_record
