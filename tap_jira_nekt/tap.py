@@ -49,6 +49,13 @@ class TapJira(Tap):
             required=True,
         ),
         th.Property(
+            "project_keys",
+            th.ArrayType(th.StringType),
+            required=False,
+            default=[],
+            description="List of project keys to filter. Only entities belonging to these projects will be synced.",
+        ),
+        th.Property(
             "stream_options",
             th.ObjectType(
                 th.Property(

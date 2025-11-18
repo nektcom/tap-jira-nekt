@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import typing as t
+
 from nekt_singer_sdk import typing as th  # JSON Schema typing helpers
+from nekt_singer_sdk.custom_logger import user_logger
 
 from tap_jira_nekt.client import JiraStream
 
@@ -12,6 +15,48 @@ class ProjectStream(JiraStream):
     path = "/project/search"
     primary_keys = ["id"]
     records_jsonpath = "$.values[*]"
+
+    def get_records(
+        self,
+        context: dict | None,
+    ) -> t.Iterable[dict[str, t.Any]]:
+        """Get records, making separate API calls per project key."""
+        project_keys = self.config.get("project_keys")
+
+        if not project_keys:
+            yield from super().get_records(context)
+            return
+
+        for project_key in project_keys:
+            self.records_jsonpath = "$"
+            url = self.url_base + f"/project/{project_key}"
+
+            try:
+                # Make a direct request for this single project
+                response = self.request_decorator(self._request)(
+                    self.build_prepared_request(
+                        method="GET",
+                        url=url,
+                        headers=self.http_headers,
+                    ),
+                    context,
+                )
+                project_data = response.json()
+                yield self.post_process(project_data, context)
+
+            except Exception as e:  # noqa: BLE001
+                user_logger.warning(f"Failed to fetch project '{project_key}': {e}")
+
+    def get_child_context(
+        self,
+        record: dict,
+        context: dict | None,  # noqa: ARG002
+    ) -> dict:
+        """Return a context dictionary for child streams."""
+        return {
+            "project_id": record["id"],
+            "project_key": record["key"],
+        }
 
     schema = th.PropertiesList(
         th.Property("expand", th.StringType),

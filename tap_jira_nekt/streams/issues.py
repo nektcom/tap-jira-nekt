@@ -582,6 +582,12 @@ class IssueStream(JiraStream):
 
         jql.append(f"updated>='{self.get_starting_timestamp(context).strftime('%Y/%m/%d %H:%M')}'")
 
+        # Add project filter if configured
+        project_keys = self.config.get("project_keys")
+        if project_keys:
+            project_filter = " OR ".join([f'project = "{key}"' for key in project_keys])
+            jql.append(f"({project_filter})")
+
         if base_jql := self.config.get("stream_options", {}).get("issues", {}).get("jql"):
             jql.append(f"({base_jql})")
 

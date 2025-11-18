@@ -4,14 +4,23 @@
     "pip_url": "-e ./extract/tap-jira-nekt",
     "executable": "tap-jira-nekt",
     "namespace": "tap_jira-nekt",
-    "capabilities": ["state", "catalog", "discover"]
+    "capabilities": [
+      "state",
+      "catalog",
+      "discover"
+    ]
   },
   "connectors": [
     {
       "connector_slug": "jira",
       "config_template": {
         "type": "object",
-        "required": ["api_token", "start_date", "domain", "email"],
+        "required": [
+          "api_token",
+          "start_date",
+          "domain",
+          "email"
+        ],
         "properties": {
           "api_token": {
             "type": "string",
@@ -43,6 +52,16 @@
             "format": "date-time",
             "el_type": "extractor",
             "description": "Records created or updated after the start date will be extracted from the source."
+          },
+          "project_keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "order": 5,
+            "title": "Project keys",
+            "el_type": "extractor",
+            "description": "List of project keys to filter (if no value is provided all projects will be extracted). Only entities belonging to these projects will be synced."
           }
         }
       }

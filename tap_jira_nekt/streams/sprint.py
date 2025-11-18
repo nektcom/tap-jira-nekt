@@ -13,11 +13,11 @@ from tap_jira_nekt.streams import BoardStream
 class SprintStream(JiraStream):
     name = "sprints"
     parent_stream_type = BoardStream
+    state_partitioning_keys = []
     path = "/board/{board_id}/sprint"
     replication_key = "id"
     records_jsonpath = "$[values][*]"
     instance_name = "values"
-    state_partitioning_keys = []
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),

@@ -2,16 +2,36 @@
 
 from __future__ import annotations
 
+import typing as t
+
 from nekt_singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_jira_nekt.client import JiraStream
+from tap_jira_nekt.streams.projects import ProjectStream
 
 
 class IssueTypeStream(JiraStream):
     name = "issue_types"
-    path = "/issuetype"
+    path = "/issuetype/project"
     primary_keys = ["id"]
     records_jsonpath = "$[*]"
+    parent_stream_type = ProjectStream
+    state_partitioning_keys = []
+    ignore_parent_replication_keys = True
+
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: t.Any | None,  # noqa: ANN401
+    ) -> dict[str, t.Any]:
+        """Return URL parameters, including project filter if configured."""
+        params = super().get_url_params(context, next_page_token)
+
+        # Add project ID filter from parent context
+        if context and "project_id" in context:
+            params["projectId"] = context["project_id"]
+
+        return params
 
     schema = th.PropertiesList(
         th.Property("self", th.StringType),

@@ -13,10 +13,10 @@ class IssueChangeLogStream(JiraStream):
     name = "issue_changelog"
     path = "/issue/{issue_id}/changelog"
     parent_stream_type = IssueStream
+    state_partitioning_keys = []
     replication_key = "created"
     primary_keys = ["id"]
     records_jsonpath = "$[values][*]"
-    state_partitioning_keys = []
 
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
