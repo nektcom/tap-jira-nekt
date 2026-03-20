@@ -34,27 +34,29 @@ class IssueTypeStream(JiraStream):
         return params
 
     schema = th.PropertiesList(
-        th.Property("self", th.StringType),
-        th.Property("id", th.StringType),
-        th.Property("description", th.StringType),
-        th.Property("icon_url", th.StringType),
-        th.Property("name", th.StringType),
-        th.Property("untranslated_name", th.StringType),
-        th.Property("subtask", th.BooleanType),
-        th.Property("avatar_id", th.IntegerType),
-        th.Property("hierarchy_level", th.IntegerType),
+        th.Property("self", th.StringType, description="URL of the resource."),
+        th.Property("id", th.StringType, description="Unique identifier of the record."),
+        th.Property("description", th.StringType, description="Description of the record."),
+        th.Property("icon_url", th.StringType, description="URL of the icon."),
+        th.Property("name", th.StringType, description="Name of the record."),
+        th.Property("untranslated_name", th.StringType, description="Untranslated name of the record."),
+        th.Property("subtask", th.BooleanType, description="Subtask of the record."),
+        th.Property("avatar_id", th.IntegerType, description="Identifier of the associated avatar."),
+        th.Property("hierarchy_level", th.IntegerType, description="Hierarchy level of the record."),
         th.Property(
             "scope",
             th.ObjectType(
-                th.Property("type", th.StringType),
+                th.Property("type", th.StringType, description="Type classification of the record."),
                 th.Property(
                     "project",
                     th.ObjectType(
-                        th.Property("id", th.StringType),
-                        th.Property("key", th.StringType),
-                        th.Property("name", th.StringType),
+                        th.Property("id", th.StringType, description="Unique identifier of the record."),
+                        th.Property("key", th.StringType, description="Unique key of the record."),
+                        th.Property("name", th.StringType, description="Name of the record."),
                     ),
-                ),
+                
+                    description="Project of the record."),
             ),
-        ),
+        
+            description="Scope of the record."),
     ).to_dict()

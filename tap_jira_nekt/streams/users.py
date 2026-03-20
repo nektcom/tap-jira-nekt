@@ -19,25 +19,26 @@ class UsersStream(JiraStream):
     records_jsonpath = "$[*]"
 
     schema = th.PropertiesList(
-        th.Property("self", th.StringType),
-        th.Property("key", th.StringType),
-        th.Property("account_id", th.StringType),
-        th.Property("account_type", th.StringType),
-        th.Property("email_address", th.StringType),
-        th.Property("name", th.StringType),
+        th.Property("self", th.StringType, description="URL of the resource."),
+        th.Property("key", th.StringType, description="Unique key of the record."),
+        th.Property("account_id", th.StringType, description="Identifier of the associated account."),
+        th.Property("account_type", th.StringType, description="Account type of the record."),
+        th.Property("email_address", th.StringType, description="Email address of the record."),
+        th.Property("name", th.StringType, description="Name of the record."),
         th.Property(
             "avatar_urls",
             th.ObjectType(
-                th.Property("48x48", th.StringType),
-                th.Property("24x24", th.StringType),
-                th.Property("16x16", th.StringType),
-                th.Property("32x32", th.StringType),
+                th.Property("48x48", th.StringType, description="48x48 of the record."),
+                th.Property("24x24", th.StringType, description="24x24 of the record."),
+                th.Property("16x16", th.StringType, description="16x16 of the record."),
+                th.Property("32x32", th.StringType, description="32x32 of the record."),
             ),
-        ),
-        th.Property("display_name", th.StringType),
-        th.Property("active", th.BooleanType),
-        th.Property("time_zone", th.StringType),
-        th.Property("locale", th.StringType),
+        
+            description="URLs related to the avatar."),
+        th.Property("display_name", th.StringType, description="Display name of the record."),
+        th.Property("active", th.BooleanType, description="Indicates whether the record is active."),
+        th.Property("time_zone", th.StringType, description="Time zone of the record."),
+        th.Property("locale", th.StringType, description="Locale of the record."),
     ).to_dict()
 
     def get_next_page_token(

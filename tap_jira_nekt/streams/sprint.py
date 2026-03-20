@@ -20,16 +20,16 @@ class SprintStream(JiraStream):
     instance_name = "values"
 
     schema = th.PropertiesList(
-        th.Property("id", th.IntegerType),
-        th.Property("self", th.StringType),
-        th.Property("state", th.StringType),
-        th.Property("name", th.StringType),
-        th.Property("start_date", th.DateTimeType),
-        th.Property("end_date", th.DateTimeType),
-        th.Property("complete_date", th.DateTimeType),
-        th.Property("origin_board_id", th.IntegerType),
-        th.Property("goal", th.StringType),
-        th.Property("board_id", th.IntegerType),
+        th.Property("id", th.IntegerType, description="Unique identifier of the record."),
+        th.Property("self", th.StringType, description="URL of the resource."),
+        th.Property("state", th.StringType, description="Current state of the record."),
+        th.Property("name", th.StringType, description="Name of the record."),
+        th.Property("start_date", th.DateTimeType, description="Date or time value for start date."),
+        th.Property("end_date", th.DateTimeType, description="Date or time value for end date."),
+        th.Property("complete_date", th.DateTimeType, description="Date or time value for complete date."),
+        th.Property("origin_board_id", th.IntegerType, description="Identifier of the associated origin board."),
+        th.Property("goal", th.StringType, description="Goal defined for the record."),
+        th.Property("board_id", th.IntegerType, description="Identifier of the associated board."),
     ).to_dict()
 
     @property

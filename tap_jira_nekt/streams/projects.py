@@ -59,46 +59,50 @@ class ProjectStream(JiraStream):
         }
 
     schema = th.PropertiesList(
-        th.Property("expand", th.StringType),
-        th.Property("self", th.StringType),
-        th.Property("id", th.StringType),
-        th.Property("key", th.StringType),
-        th.Property("name", th.StringType),
+        th.Property("expand", th.StringType, description="Expandable fields included in the response."),
+        th.Property("self", th.StringType, description="URL of the resource."),
+        th.Property("id", th.StringType, description="Unique identifier of the record."),
+        th.Property("key", th.StringType, description="Unique key of the record."),
+        th.Property("name", th.StringType, description="Name of the record."),
         th.Property(
             "avatar_urls",
             th.ObjectType(
-                th.Property("48x48", th.StringType),
-                th.Property("24x24", th.StringType),
-                th.Property("16x16", th.StringType),
-                th.Property("32x32", th.StringType),
+                th.Property("48x48", th.StringType, description="48x48 of the record."),
+                th.Property("24x24", th.StringType, description="24x24 of the record."),
+                th.Property("16x16", th.StringType, description="16x16 of the record."),
+                th.Property("32x32", th.StringType, description="32x32 of the record."),
             ),
-        ),
-        th.Property("project_type_key", th.StringType),
-        th.Property("simplified", th.BooleanType),
-        th.Property("style", th.StringType),
-        th.Property("is_private", th.BooleanType),
+        
+            description="URLs related to the avatar."),
+        th.Property("project_type_key", th.StringType, description="Project type key of the record."),
+        th.Property("simplified", th.BooleanType, description="Simplified of the record."),
+        th.Property("style", th.StringType, description="Style of the record."),
+        th.Property("is_private", th.BooleanType, description="Indicates whether the record is private."),
         th.Property(
             "properties",
             th.ObjectType(
-                th.Property("property_key", th.StringType),
+                th.Property("property_key", th.StringType, description="Property key of the record."),
             ),
-        ),
-        th.Property("entity_id", th.StringType),
-        th.Property("uuid", th.StringType),
+        
+            description="Properties of the record."),
+        th.Property("entity_id", th.StringType, description="Identifier of the associated entity."),
+        th.Property("uuid", th.StringType, description="Uuid of the record."),
         th.Property(
             "project_category",
             th.ObjectType(
-                th.Property("self", th.StringType),
-                th.Property("id", th.StringType),
-                th.Property("name", th.StringType),
-                th.Property("description", th.StringType),
+                th.Property("self", th.StringType, description="URL of the resource."),
+                th.Property("id", th.StringType, description="Unique identifier of the record."),
+                th.Property("name", th.StringType, description="Name of the record."),
+                th.Property("description", th.StringType, description="Description of the record."),
             ),
-        ),
+        
+            description="Project category of the record."),
         th.Property(
             "insight",
             th.ObjectType(
-                th.Property("total_issue_count", th.IntegerType),
-                th.Property("last_issue_update_time", th.StringType),
+                th.Property("total_issue_count", th.IntegerType, description="Total issue count of the record."),
+                th.Property("last_issue_update_time", th.StringType, description="Date or time value for last issue update time."),
             ),
-        ),
+        
+            description="Insight of the record."),
     ).to_dict()

@@ -35,21 +35,22 @@ class BoardStream(JiraStream):
         return params
 
     schema = th.PropertiesList(
-        th.Property("id", th.IntegerType),
-        th.Property("self", th.StringType),
-        th.Property("name", th.StringType),
-        th.Property("type", th.StringType),
+        th.Property("id", th.IntegerType, description="Unique identifier of the record."),
+        th.Property("self", th.StringType, description="URL of the resource."),
+        th.Property("name", th.StringType, description="Name of the record."),
+        th.Property("type", th.StringType, description="Type classification of the record."),
         th.Property(
             "location",
             th.ObjectType(
-                th.Property("project_id", th.IntegerType),
-                th.Property("display_name", th.StringType),
-                th.Property("project_name", th.StringType),
-                th.Property("project_key", th.StringType),
-                th.Property("project_type_key", th.StringType),
-                th.Property("name", th.StringType),
+                th.Property("project_id", th.IntegerType, description="Identifier of the associated project."),
+                th.Property("display_name", th.StringType, description="Display name of the record."),
+                th.Property("project_name", th.StringType, description="Project name of the record."),
+                th.Property("project_key", th.StringType, description="Project key of the record."),
+                th.Property("project_type_key", th.StringType, description="Project type key of the record."),
+                th.Property("name", th.StringType, description="Name of the record."),
             ),
-        ),
+        
+            description="Location of the record."),
     ).to_dict()
 
     @property

@@ -35,43 +35,47 @@ class FieldsStream(JiraStream):
         return params
 
     schema = th.PropertiesList(
-        th.Property("id", th.StringType),
-        th.Property("key", th.StringType),
-        th.Property("name", th.StringType),
-        th.Property("untranslated_name", th.StringType),
-        th.Property("custom", th.BooleanType),
-        th.Property("orderable", th.BooleanType),
-        th.Property("navigable", th.BooleanType),
-        th.Property("searchable", th.BooleanType),
-        th.Property("clause_names", th.ArrayType(th.StringType)),
+        th.Property("id", th.StringType, description="Unique identifier of the record."),
+        th.Property("key", th.StringType, description="Unique key of the record."),
+        th.Property("name", th.StringType, description="Name of the record."),
+        th.Property("untranslated_name", th.StringType, description="Untranslated name of the record."),
+        th.Property("custom", th.BooleanType, description="Indicates whether the field is custom."),
+        th.Property("orderable", th.BooleanType, description="Indicates whether the field can be used for ordering."),
+        th.Property("navigable", th.BooleanType, description="Indicates whether the field is visible in navigation."),
+        th.Property("searchable", th.BooleanType, description="Indicates whether the field can be used in search."),
+        th.Property("clause_names", th.ArrayType(th.StringType), description="Clause names of the record."),
         th.Property(
             "scope",
             th.ObjectType(
-                th.Property("type", th.StringType),
+                th.Property("type", th.StringType, description="Type classification of the record."),
                 th.Property(
                     "project",
                     th.ObjectType(
-                        th.Property("id", th.StringType),
+                        th.Property("id", th.StringType, description="Unique identifier of the record."),
                     ),
-                ),
+                
+                    description="Project of the record."),
             ),
-        ),
+        
+            description="Scope of the record."),
         th.Property(
             "schema",
             th.ObjectType(
-                th.Property("type", th.StringType),
-                th.Property("system", th.StringType),
-                th.Property("items", th.StringType),
-                th.Property("custom", th.StringType),
-                th.Property("custom_id", th.IntegerType),
+                th.Property("type", th.StringType, description="Type classification of the record."),
+                th.Property("system", th.StringType, description="System of the record."),
+                th.Property("items", th.StringType, description="Items of the record."),
+                th.Property("custom", th.StringType, description="Indicates whether the field is custom."),
+                th.Property("custom_id", th.IntegerType, description="Identifier of the associated custom."),
                 th.Property(
                     "configuration",
                     th.ObjectType(
-                        th.Property("custom_renderer", th.BooleanType),
-                        th.Property("read_only", th.BooleanType),
-                        th.Property("environment", th.StringType),
+                        th.Property("custom_renderer", th.BooleanType, description="Custom renderer of the record."),
+                        th.Property("read_only", th.BooleanType, description="Read only of the record."),
+                        th.Property("environment", th.StringType, description="Environment of the record."),
                     ),
-                ),
+                
+                    description="Configuration of the record."),
             ),
-        ),
+        
+            description="Schema of the record."),
     ).to_dict()
