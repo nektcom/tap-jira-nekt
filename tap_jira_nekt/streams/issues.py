@@ -638,7 +638,9 @@ class IssueStream(JiraStream):
             params["sort"] = "asc"
             params["order_by"] = self.replication_key
 
-        jql.append(f"updated>='{self.get_starting_timestamp(context).strftime('%Y/%m/%d %H:%M')}'")
+        starting_timestamp = self.get_starting_timestamp(context)
+        if starting_timestamp:
+            jql.append(f"updated>='{starting_timestamp.strftime('%Y/%m/%d %H:%M')}'")
 
         # Add project filter if configured
         project_keys = self.config.get("project_keys")
