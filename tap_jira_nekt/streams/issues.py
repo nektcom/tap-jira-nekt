@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+from functools import cached_property
 from typing import Any, Mapping
 
-import requests  # JSON Schema typing helpers
+import requests
 from nekt_singer_sdk import typing as th
+from nekt_singer_sdk.custom_logger import user_logger
 from nekt_singer_sdk.pagination import JSONPathPaginator
 
 from tap_jira_nekt.client import JiraStream
@@ -18,8 +20,33 @@ class IssueStream(JiraStream):
     replication_key = "updated"
     records_jsonpath = "$[issues][*]"
 
-    # TODO: Add custom fields and description
-    schema = th.PropertiesList(
+    @cached_property
+    def schema(self) -> dict:
+        custom_field_props: list[th.Property] = []
+        try:
+            response = requests.get(
+                f"https://{self.config['domain']}:443/rest/api/3/field",
+                auth=(self.config["email"], self.config["api_token"]),
+                timeout=30,
+            )
+            response.raise_for_status()
+            jira_to_th: dict = {"number": th.NumberType, "boolean": th.BooleanType}
+            for field in response.json():
+                if not field.get("custom"):
+                    continue
+                field_id = field.get("id", "")
+                field_type = field.get("schema", {}).get("type", "")
+                custom_field_props.append(
+                    th.Property(
+                        field_id,
+                        jira_to_th.get(field_type, th.StringType),
+                        description=field.get("name", field_id),
+                    )
+                )
+        except Exception as e:
+            user_logger.warning(f"[{self.name}] Could not fetch custom fields: {e}")
+
+        return th.PropertiesList(
         th.Property("expand", th.StringType, description="Expandable fields included in the response."),
         th.Property("id", th.StringType, description="Unique identifier of the record."),
         th.Property("self", th.StringType, description="URL of the resource."),
@@ -609,8 +636,9 @@ class IssueStream(JiraStream):
                 th.Property("id", th.IntegerType, description="Unique identifier of the record."),
                 th.Property("editmeta", th.StringType, description="Editmeta of the record."),
                 th.Property("histories", th.StringType, description="Histories of the record."),
+                *custom_field_props,
             ),
-        
+
             description="Fields of the record."),
         th.Property("created", th.DateTimeType, description="Timestamp when the record was created."),
         th.Property("updated", th.DateTimeType, description="Timestamp when the record was last updated."),
