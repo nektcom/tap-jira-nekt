@@ -31,13 +31,10 @@ class IssueStream(JiraStream):
             )
             response.raise_for_status()
             jira_to_th: dict = {"number": th.NumberType, "boolean": th.BooleanType}
-            static_custom_fields = {"customfield_10055"}
             for field in response.json():
                 if not field.get("custom"):
                     continue
                 field_id = field.get("id", "")
-                if field_id in static_custom_fields:
-                    continue
                 field_type = field.get("schema", {}).get("type", "")
                 custom_field_props.append(
                     th.Property(
@@ -638,16 +635,6 @@ class IssueStream(JiraStream):
                 th.Property("id", th.IntegerType, description="Unique identifier of the record."),
                 th.Property("editmeta", th.StringType, description="Editmeta of the record."),
                 th.Property("histories", th.StringType, description="Histories of the record."),
-                th.Property(
-                    "customfield_10055",
-                    th.ObjectType(
-                        th.Property("self", th.StringType),
-                        th.Property("value", th.StringType),
-                        th.Property("id", th.StringType),
-                        additional_properties=True,
-                    ),
-                    description="Customer",
-                ),
                 *custom_field_props,
                 additional_properties=True,
             ),
@@ -656,6 +643,10 @@ class IssueStream(JiraStream):
         th.Property("created", th.DateTimeType, description="Timestamp when the record was created."),
         th.Property("updated", th.DateTimeType, description="Timestamp when the record was last updated."),
     ).to_dict()
+
+    @property
+    def effective_schema(self) -> dict:
+        return self.schema
 
     def get_new_paginator(self) -> JSONPathPaginator:
         return JSONPathPaginator(jsonpath="$.nextPageToken")
