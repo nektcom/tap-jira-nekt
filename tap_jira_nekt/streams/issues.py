@@ -47,7 +47,6 @@ class IssueStream(JiraStream):
             user_logger.warning(f"[{self.name}] Could not fetch custom fields: {e}")
 
         return th.PropertiesList(
-        th.Property("expand", th.StringType, description="Expandable fields included in the response."),
         th.Property("id", th.StringType, description="Unique identifier of the record."),
         th.Property("self", th.StringType, description="URL of the resource."),
         th.Property("key", th.StringType, description="Unique key of the record."),
@@ -637,6 +636,7 @@ class IssueStream(JiraStream):
                 th.Property("editmeta", th.StringType, description="Editmeta of the record."),
                 th.Property("histories", th.StringType, description="Histories of the record."),
                 *custom_field_props,
+                additional_properties=True,
             ),
 
             description="Fields of the record."),
@@ -686,10 +686,10 @@ class IssueStream(JiraStream):
         return super().validate_response(response)
 
     def post_process(self, row: dict[str, Any], context: Mapping[str, Any] | None = None) -> dict | None:
-        new_row = row
-        new_row["created"] = row["fields"]["created"]
-        new_row["updated"] = row["fields"]["updated"]
-        return super().post_process(new_row, context)
+        row.pop("expand", None)
+        row["created"] = row["fields"]["created"]
+        row["updated"] = row["fields"]["updated"]
+        return super().post_process(row, context)
 
     def get_child_context(self, record: dict, context: dict | None) -> dict:  # noqa: ARG002
         """Return a context dictionary for child streams."""
