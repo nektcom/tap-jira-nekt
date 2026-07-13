@@ -21,6 +21,11 @@ class IssueStream(JiraStream):
     replication_key = "updated"
     records_jsonpath = "$[issues][*]"
 
+    # Fallback lower bound for the "updated" JQL clause when there's no bookmark yet.
+    # Jira's /search/jql endpoint rejects fully unbounded queries, so this keeps the
+    # request "bounded" while still matching every record.
+    MIN_UPDATED_TIMESTAMP = "1900/01/01 00:00"
+
     schema = th.PropertiesList(
         th.Property("id", th.StringType, description="Unique identifier of the record."),
         th.Property("self", th.StringType, description="URL of the resource."),
@@ -53,8 +58,11 @@ class IssueStream(JiraStream):
             params["order_by"] = self.replication_key
 
         starting_timestamp = self.get_starting_timestamp(context)
-        if starting_timestamp:
-            jql.append(f"updated>='{starting_timestamp.strftime('%Y/%m/%d %H:%M')}'")
+        # Jira's /search/jql endpoint rejects fully unbounded queries, so fall back to a
+        # fixed minimal date when there's no bookmark yet. This matches every record, same
+        # as omitting the clause, while keeping the request "bounded".
+        lower_bound = starting_timestamp.strftime("%Y/%m/%d %H:%M") if starting_timestamp else self.MIN_UPDATED_TIMESTAMP
+        jql.append(f"updated>='{lower_bound}'")
 
         # Add project filter if configured
         project_keys = self.config.get("project_keys")
