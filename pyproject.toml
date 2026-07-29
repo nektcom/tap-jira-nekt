@@ -1,27 +1,42 @@
-[tool.poetry]
-name = "tap-jira-nekt"
+[project]
+name = "nekt-tap-jira-nekt"
 version = "0.0.1"
 description = "`tap-jira` is a Singer tap for tap-jira, built with the Meltano Singer SDK."
 readme = "README.md"
-authors = ["Ethan Stein"]
+authors = [{ name = "Ethan Stein" }]
+license = "Apache-2.0"
 keywords = [
     "ELT",
     "tap-jira-nekt",
 ]
-license = "Apache-2.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fs-s3fs>=1.1.1",
+    "inflection>=0.5.1",
+    "nekt-singer-sdk @ git+https://github.com/nektcom/singer-sdk.git@v0.23.0",
+    "requests~=2.32.2",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.11"
-fs-s3fs = { version = "^1.1.1", optional = true }
-requests = "~=2.32.2"
-inflection = "^0.5.1"
-nekt-singer-sdk = {git = "https://github.com/nektcom/singer-sdk.git"}
+[project.optional-dependencies]
+s3 = [
+    "fs-s3fs",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = ">=8"
+[project.scripts]
+tap-jira-nekt = 'tap_jira_nekt.tap:TapJira.cli'
 
-[tool.poetry.extras]
-s3 = ["fs-s3fs"]
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "tap_jira_nekt",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.mypy]
 python_version = "3.9"
@@ -42,10 +57,7 @@ known-first-party = ["tap_jira_nekt"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[build-system]
-requires = ["poetry-core>=1.0.8"]
-build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.scripts]
-# CLI declaration
-tap-jira-nekt = 'tap_jira_nekt.tap:TapJira.cli'
+[build-system]
+requires = ["hatchling>=1,<2"]
+build-backend = "hatchling.build"
